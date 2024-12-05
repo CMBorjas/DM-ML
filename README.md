@@ -23,3 +23,10 @@ Tools:
         * To integrate the LLM with the database and ensure smooth retrieval of campaign data in real time.
     *	Example: 
         * A player defeats a key NPC, which is stored in the database. When the DM asks for a follow-up encounter, the LLM knows not to suggest that NPC, thanks to the real-time update. This can also come up as a negative later on if the players defeat enough NPCs to trigger consequences in the campaign. It should also be able to move some story beats to other living NPC’s. 
+
+## Planned updates
+- Advanced NPC Responses: Integrate a language model (like LangChain or OpenAI's GPT) to generate intelligent, context-aware responses.
+- Enhanced UI: Add features like tabs for different NPCs or a dashboard to manage NPC interactions.
+- Export Logs: Allow exporting chat logs to a text file for Dungeon Masters to review or archive.
+- Map Integration: Build a feature to attach NPCs to specific map locations and manage interactions visually.
+- Dynamic Traits or Quests: Enable NPCs to dynamically suggest quests or actions based on player input.
