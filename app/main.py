@@ -1,9 +1,10 @@
 import os
 import json
 import random
-from openai import OpenAI
+import openai
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for
+from openai import OpenAI
 
 # Load environment variables
 load_dotenv()
@@ -14,40 +15,37 @@ app = Flask(__name__)
 # File to store NPC data
 DATA_FILE = os.path.join("data", "npc_data.json")
 
-# Instantiate the OpenAI client
-client = OpenAI(
-    api_key=os.environ.get("OPENAI_API_KEY")  # Automatically picks the key from .env
-)
+# Initialize OpenAI client
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Function to generate NPC responses using OpenAI's GPT
+# Function to generate response using OpenAI
 def generate_response(npc_name, user_message):
     try:
-        # Define the chat messages
+        # Define the messages for the conversation
         messages = [
-            {
-                "role": "system",
-                "content": f"{npc_name} is a wise and engaging NPC in a tabletop RPG. Respond to the player's questions and comments thoughtfully."
-            },
-            {
-                "role": "user",
-                "content": user_message
-            }
+            {"role": "system", "content": f"{npc_name} is a wise and engaging NPC in a tabletop RPG. Respond to the player's questions and comments thoughtfully."},
+            {"role": "user", "content": user_message}
         ]
 
-        # Generate the chat completion
+        # Use openai.completions.create with the updated API format
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",  # Replace with "gpt-4" if you have access
+            model="gpt-3.5-turbo",  # Use the appropriate model, e.g., "gpt-4" if available
             messages=messages,
             max_tokens=150,
             temperature=0.7
         )
 
-        # Extract the content of the response
-        return response.choices[0].message.content.strip()
+        # Correct access to response content
+        npc_response = response.choices[0].message.content.strip()
+        return npc_response
 
-    except Exception as e:
+    except openai.OpenAIError as e:  # Generic OpenAI error handling
         print(f"Error generating response: {e}")
         return f"{npc_name} says: 'I'm having trouble responding right now.'"
+
+    except openai.RateLimitError as e:  # Handling rate limit errors specifically
+        print(f"Rate limit exceeded: {e}")
+        return f"{npc_name} says: 'The system is temporarily overwhelmed. Please try again later.'"
 
 # Save NPC data to a file
 def save_data():
@@ -127,19 +125,18 @@ def generate_npc_route():
 # Route to chat with an NPC
 @app.route('/chat/<int:npc_id>', methods=['GET', 'POST'])
 def chat(npc_id):
-    npc = npcs.get(npc_id)  # Use integer key
+    npc = npcs.get(npc_id)  # Get the NPC by ID
     if not npc:
         return "NPC not found", 404
 
-    # Ensure 'messages' key exists
     if "messages" not in npc:
-        npc["messages"] = []
+        npc["messages"] = []  # Initialize if missing
 
     if request.method == 'POST':
         user_message = request.form['user_message']
         npc["messages"].append({"sender": "You", "text": user_message})
 
-        # Generate response using the language model
+        # Generate the NPC response using OpenAI
         npc_response = generate_response(npc["name"], user_message)
         npc["messages"].append({"sender": npc['name'], "text": npc_response})
 
