@@ -1,0 +1,11 @@
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore environment and dependency files
+venv/
+.env
+
+# Ignore JSON data files
+data/npc_data.json

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Create a New NPC</h2>
+<form action="/create_npc" method="POST">
+    <label for="npc_name">Name:</label>
+    <input type="text" id="npc_name" name="npc_name" required>
+    <br>
+    <label for="npc_role">Role (e.g., Merchant, Guard):</label>
+    <input type="text" id="npc_role" name="npc_role" required>
+    <br>
+    <label for="npc_description">Description:</label>
+    <textarea id="npc_description" name="npc_description" rows="4" required></textarea>
+    <br>
+    <button type="submit">Create NPC</button>
+</form>
+{% endblock %}

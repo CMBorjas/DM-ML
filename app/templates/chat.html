@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Chat with {{ npc['name'] }}</h2>
+
+<h3>Stats</h3>
+<ul>
+    <li>Armor Class: {{ npc['armor_class'] }}</li>
+    <li>Hit Points: {{ npc['hit_points'] }}</li>
+    <li>Speed: {{ npc['speed'] }}</li>
+</ul>
+
+<h3>Abilities</h3>
+<ul>
+    {% for stat, value in npc['stats'].items() %}
+        <li>{{ stat }}: {{ value }}</li>
+    {% endfor %}
+</ul>
+
+<h3>Special Traits</h3>
+<ul>
+    {% for trait in npc['special_traits'] %}
+        <li>{{ trait }}</li>
+    {% endfor %}
+</ul>
+
+<h3>Actions</h3>
+<ul>
+    {% for action in npc['actions'] %}
+        <li><strong>{{ action['name'] }}</strong>: {{ action['description'] }}</li>
+    {% endfor %}
+</ul>
+
+<h3>Message Log</h3>
+<div id="chat-box" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; height: 300px; overflow-y: scroll;">
+    {% for message in messages %}
+        <p><strong>{{ message['sender'] }}:</strong> {{ message['text'] }}</p>
+    {% endfor %}
+</div>
+
+<form action="/chat/{{ npc_id }}" method="POST">
+    <input type="text" name="user_message" placeholder="Type your message..." required>
+    <button type="submit">Send</button>
+</form>
+{% endblock %}

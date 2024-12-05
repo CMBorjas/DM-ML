@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Welcome to ML-DM!</h2>
+<form action="/generate_npc" method="POST">
+    <button type="submit">Generate NPC</button>
+</form>
+
+<h3>Generated NPCs</h3>
+<ul>
+    {% for npc_id, npc in npcs.items() %}
+        <li>
+            <strong>{{ npc['name'] }}</strong> 
+            - <a href="/chat/{{ npc_id }}">Chat</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
